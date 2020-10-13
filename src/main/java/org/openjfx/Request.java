@@ -5,21 +5,13 @@ import javafx.beans.property.IntegerProperty;
 import java.net.URL;
 
 public class Request {
-    String method;
+    private String method;
     //URL url;
-    String url;
-    String header;
-    String body;
+    private String url;
+    private String header;
+    private String  body;
 
     public Request(){}
-
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
 
     public String getMethod() {
         return method;
@@ -29,12 +21,20 @@ public class Request {
         this.method = method;
     }
 
-    public String  getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(String  url) {
+    public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
     }
 
     public String getBody() {
