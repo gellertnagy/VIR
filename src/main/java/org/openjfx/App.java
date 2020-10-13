@@ -103,11 +103,10 @@ public class App extends Application {
                 ex.printStackTrace();
             }*/
             Request rq = new Request();
-            rq.method=methodC.getValue();
-            rq.url=url.getText();
-            //rq.url=u;
-            rq.body=body.getText();
-            rq.header=header.getText();
+            rq.setMethod(methodC.getValue());
+            rq.setUrl(url.getText());
+            rq.setBody(body.getText());
+            rq.setHeader(header.getText());
             new Result(rq);
         });
 

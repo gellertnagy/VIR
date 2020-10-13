@@ -6,7 +6,6 @@ import java.net.URL;
 
 public class Request {
     private String method;
-    //URL url;
     private String url;
     private String header;
     private String  body;

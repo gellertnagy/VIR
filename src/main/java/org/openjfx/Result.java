@@ -24,7 +24,7 @@ public class Result {
 
     public void sendRequest(Request rq){
         try {
-            URL url = new URL(rq.url);
+            URL url = new URL(rq.getUrl());
 
         }catch (MalformedURLException e) {
             e.printStackTrace();
