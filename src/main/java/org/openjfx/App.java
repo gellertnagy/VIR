@@ -18,7 +18,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 
 import static org.openjfx.Error.errorMessage;
@@ -53,6 +55,12 @@ public class App extends Application {
         TextField url = new TextField();
         url.setPrefWidth(400);
 
+        Label headerL = new Label("Body");
+
+        TextField header = new TextField();
+        header.setPrefWidth(400);
+        header.setPrefHeight(200);
+
         Label bodyL = new Label("Body");
 
         TextField body = new TextField();
@@ -71,10 +79,12 @@ public class App extends Application {
         grid.add(methodC,1,1);
         grid.add(urlL,0,2);
         grid.add(url,1,2);
-        grid.add(bodyL,0,3);
-        grid.add(body,1,3);
-        grid.add(exit,0,4);
-        grid.add(send,1,4);
+        grid.add(headerL,0,3);
+        grid.add(header,1,3);
+        grid.add(bodyL,0,4);
+        grid.add(body,1,4);
+        grid.add(exit,0,5);
+        grid.add(send,1,5);
 
         send.setOnAction(e->{
             URL u=null;
@@ -97,6 +107,7 @@ public class App extends Application {
             rq.url=url.getText();
             //rq.url=u;
             rq.body=body.getText();
+            rq.header=header.getText();
             new Result(rq);
         });
 
@@ -104,7 +115,6 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
-
     public static void main(String[] args) {
         launch();
     }

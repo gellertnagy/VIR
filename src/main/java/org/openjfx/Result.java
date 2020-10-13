@@ -11,12 +11,27 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Result {
 
-    public Result(Request rq){resultDialog(rq);}
+    public Result(Request rq){sendRequest(rq);}
 
-    public void resultDialog(Request rq){
+    private static HttpURLConnection connection;
+
+    public void sendRequest(Request rq){
+        try {
+            URL url = new URL(rq.url);
+
+        }catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void resultDialog(Response rs){
         Stage stage = new Stage();
         stage.setTitle("Result");
 
@@ -30,11 +45,13 @@ public class Result {
 
         TextField status = new TextField();
         status.setEditable(false);
+        //status.setText(rs.getResponseCode());
 
         Label resultBodyL = new Label("Resul Body");
 
         TextField resultBofy = new TextField();
         resultBofy.setEditable(false);
+        resultBofy.setText(rs.getResponseBody());
 
         Button back = new Button("Vissza");
         back.setOnAction(e->{
@@ -47,6 +64,16 @@ public class Result {
         exit.setOnAction(e->{
             Platform.exit();
         });
+
+        /*
+        Innen kezdődik a HTTP kérés
+         */
+
+
+
+        /*
+        És a vége
+         */
 
         grid.add(statusL,0,0);
         grid.add(status,1,0);

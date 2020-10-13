@@ -8,9 +8,18 @@ public class Request {
     String method;
     //URL url;
     String url;
+    String header;
     String body;
 
     public Request(){}
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
 
     public String getMethod() {
         return method;
