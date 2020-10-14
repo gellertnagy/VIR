@@ -16,6 +16,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.openjfx.Error.errorMessage;
+
 public class Result {
 
     public Result(Request rq){sendRequest(rq);}
@@ -23,10 +25,23 @@ public class Result {
     private static HttpURLConnection connection;
 
     public void sendRequest(Request rq){
+        Response rs = new Response();
         try {
             URL url = new URL(rq.getUrl());
+            connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod(rq.getMethod());
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            rs.setResponseCode(connection.getResponseCode());
+            rs.setResponseBody(connection.getResponseMessage());
+
+            resultDialog(rs);
 
         }catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -40,6 +55,10 @@ public class Result {
         grid.setPadding(new Insets(15,15,15,15));
         grid.setHgap(5);
         grid.setVgap(10);
+
+        if (rs.getResponseCode()==0 || rs.getResponseBody().isEmpty()){
+            errorMessage("Hiba történt!","");
+        }
 
         Label statusL = new Label("Status code:");
 
