@@ -4,14 +4,15 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,6 +24,9 @@ public class Result {
     public Result(Request rq){sendRequest(rq);}
 
     private static HttpURLConnection connection;
+    BufferedReader reader;
+    String line;
+    StringBuffer responseContent = new StringBuffer();
 
     public void sendRequest(Request rq){
         Response rs = new Response();
@@ -34,8 +38,21 @@ public class Result {
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
 
+            if(connection.getResponseCode() > 299){
+                reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                while ((line = reader.readLine()) != null){
+                    responseContent.append(line);
+                }
+                reader.close();
+            }else {
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                while ((line = reader.readLine()) != null){
+                    responseContent.append(line);
+                }
+                reader.close();
+            }
             rs.setResponseCode(connection.getResponseCode());
-            rs.setResponseBody(connection.getResponseMessage());
+            rs.setResponseBody(responseContent.toString());
 
             resultDialog(rs);
 
@@ -62,15 +79,19 @@ public class Result {
 
         Label statusL = new Label("Status code:");
 
-        TextField status = new TextField();
+        Spinner<Integer> status = new Spinner<Integer>();
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(rs.getResponseCode(),rs.getResponseCode(),rs.getResponseCode());
+        status.setValueFactory(valueFactory);
         status.setEditable(false);
-        //status.setText(rs.getResponseCode());
 
         Label resultBodyL = new Label("Resul Body");
 
         TextField resultBofy = new TextField();
         resultBofy.setEditable(false);
         resultBofy.setText(rs.getResponseBody());
+        resultBofy.setPrefWidth(400);
+        resultBofy.setPrefHeight(200);
+
 
         Button back = new Button("Vissza");
         back.setOnAction(e->{
@@ -84,15 +105,6 @@ public class Result {
             Platform.exit();
         });
 
-        /*
-        Innen kezdődik a HTTP kérés
-         */
-
-
-
-        /*
-        És a vége
-         */
 
         grid.add(statusL,0,0);
         grid.add(status,1,0);
@@ -102,7 +114,7 @@ public class Result {
         grid.add(ujra,1,2);
         grid.add(exit,2,2);
 
-        Scene scene = new Scene(grid,500,500);
+        Scene scene = new Scene(grid,750,750);
         stage.setScene(scene);
         stage.show();
     }
