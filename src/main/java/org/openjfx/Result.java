@@ -57,7 +57,10 @@ public class Result {
                resultDialog(rs);
 
            }catch (MalformedURLException e) {
-               e.printStackTrace();
+               //System.out.println(e.getMessage());
+               errorMessage("Az URL nem megfelelő","URL hiba");
+               return;
+               //e.printStackTrace();
            } catch (IOException e) {
                e.printStackTrace();
            }

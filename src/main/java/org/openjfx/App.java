@@ -101,6 +101,7 @@ public class App extends Application {
             } catch (MalformedURLException ex) {
                 errorMessage("Az endpoint nem megfelelő","");
                 ex.printStackTrace();
+                return;
             }*/
             Request rq = new Request();
             rq.setMethod(methodC.getValue());
