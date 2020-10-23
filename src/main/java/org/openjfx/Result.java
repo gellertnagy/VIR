@@ -9,58 +9,87 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.io.*;
+import java.net.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
+//import static jdk.internal.net.http.HttpRequestImpl.USER_AGENT;
 import static org.openjfx.Error.errorMessage;
 
 public class Result {
 
-    public Result(Request rq){sendRequest(rq);}
+    public Result(Request rq) throws IOException {sendRequest(rq);}
 
     private static HttpURLConnection connection;
     BufferedReader reader;
     String line;
     StringBuffer responseContent = new StringBuffer();
 
-    public void sendRequest(Request rq){
-        Response rs = new Response();
-        try {
-            URL url = new URL(rq.getUrl());
-            connection = (HttpURLConnection) url.openConnection();
+    public void sendRequest(Request rq) throws IOException {
+       Response rs = new Response();
+       if(rq.getMethod()=="GET"){
+           try {
+               URL url = new URL(rq.getUrl());
+               connection = (HttpURLConnection) url.openConnection();
+               connection.setRequestMethod(rq.getMethod());
+               connection.setConnectTimeout(5000);
+               connection.setReadTimeout(5000);
 
-            connection.setRequestMethod(rq.getMethod());
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+               if(connection.getResponseCode() > 299){
+                   reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                   while ((line = reader.readLine()) != null){
+                       responseContent.append(line);
+                   }
+                   reader.close();
+               }else {
+                   reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                   while ((line = reader.readLine()) != null){
+                       responseContent.append(line);
+                   }
+                   reader.close();
+               }
+               rs.setResponseCode(connection.getResponseCode());
+               rs.setResponseBody(responseContent.toString());
 
-            if(connection.getResponseCode() > 299){
-                reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                while ((line = reader.readLine()) != null){
-                    responseContent.append(line);
-                }
-                reader.close();
-            }else {
-                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                while ((line = reader.readLine()) != null){
-                    responseContent.append(line);
-                }
-                reader.close();
-            }
-            rs.setResponseCode(connection.getResponseCode());
-            rs.setResponseBody(responseContent.toString());
+               resultDialog(rs);
 
-            resultDialog(rs);
+           }catch (MalformedURLException e) {
+               e.printStackTrace();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }else if (rq.getMethod()=="POST"){
+           URL obj = new URL(rq.getUrl());
+           HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+           con.setRequestMethod(rq.getMethod());
 
-        }catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+           con.setDoOutput(true);
+           OutputStream os = con.getOutputStream();
+           os.write(rq.getBody().getBytes());
+           os.flush();
+           os.close();
+
+           int responseCode = con.getResponseCode();
+           rs.setResponseCode(responseCode);
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                       con.getInputStream()));
+               String inputLine;
+               StringBuffer response = new StringBuffer();
+
+               while ((inputLine = in.readLine()) != null) {
+                   response.append(inputLine);
+               }
+               in.close();
+               rs.setResponseBody(response.toString());
+           resultDialog(rs);
+       }else{
+           errorMessage("Hiba történt","Hiba!");
+       }
+
+
     }
 
     public void resultDialog(Response rs){
@@ -111,8 +140,8 @@ public class Result {
         grid.add(resultBodyL,0,1);
         grid.add(resultBofy,1,1);
         grid.add(back,0,2);
-        grid.add(ujra,1,2);
-        grid.add(exit,2,2);
+        //grid.add(ujra,1,2);
+        grid.add(exit,1,2);
 
         Scene scene = new Scene(grid,750,750);
         stage.setScene(scene);

@@ -11,4 +11,9 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="VIR" options="--add-exports=java.net.http/jdk.internal.net.http=org.openjfx" />
+    </option>
+  </component>
 </project>

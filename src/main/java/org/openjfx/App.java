@@ -45,7 +45,7 @@ public class App extends Application {
         Label methodL = new Label("Method");
 
         ComboBox<String> methodC = new ComboBox<>();
-        ObservableList<String> method = FXCollections.observableArrayList("GET", "POST", "DELETE");
+        ObservableList<String> method = FXCollections.observableArrayList("GET", "POST");
         methodC.setItems(method);
         methodC.setEditable(false);
         methodC.setValue("Válassz!");
@@ -55,7 +55,7 @@ public class App extends Application {
         TextField url = new TextField();
         url.setPrefWidth(400);
 
-        Label headerL = new Label("Body");
+        Label headerL = new Label("Header");
 
         TextField header = new TextField();
         header.setPrefWidth(400);
@@ -107,7 +107,11 @@ public class App extends Application {
             rq.setUrl(url.getText());
             rq.setBody(body.getText());
             rq.setHeader(header.getText());
-            new Result(rq);
+            try {
+                new Result(rq);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         });
 
         var scene = new Scene(grid, 750, 750);
