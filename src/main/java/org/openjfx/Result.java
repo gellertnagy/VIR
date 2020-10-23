@@ -16,7 +16,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 
-//import static jdk.internal.net.http.HttpRequestImpl.USER_AGENT;
 import static org.openjfx.Error.errorMessage;
 
 public class Result {
@@ -57,10 +56,8 @@ public class Result {
                resultDialog(rs);
 
            }catch (MalformedURLException e) {
-               //System.out.println(e.getMessage());
                errorMessage("Az URL nem megfelelő","URL hiba");
                return;
-               //e.printStackTrace();
            } catch (IOException e) {
                e.printStackTrace();
            }

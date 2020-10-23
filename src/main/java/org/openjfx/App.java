@@ -95,14 +95,6 @@ public class App extends Application {
                 errorMessage("Az endpoint nem megfelelő","");
                 return;
             }
-            /*try {
-                String urlString = url.toString();
-                u = new URL(urlString);
-            } catch (MalformedURLException ex) {
-                errorMessage("Az endpoint nem megfelelő","");
-                ex.printStackTrace();
-                return;
-            }*/
             Request rq = new Request();
             rq.setMethod(methodC.getValue());
             rq.setUrl(url.getText());
